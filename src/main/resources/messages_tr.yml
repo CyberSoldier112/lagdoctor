@@ -1,0 +1,141 @@
+# LagDoctor Türkçe mesajlar. Renk kodları & ile yazılır.
+# Eksik anahtarlar önce jar içindeki varsayılana, o da yoksa anahtar adına düşer.
+prefix: "&8[&bLagDoctor&8]&r "
+
+general:
+  no-permission: "&cBu komut için yetkin yok."
+  players-only: "&cBu komut sadece oyun içinden kullanılabilir."
+  unknown-command: "&cKullanım: /lagdoctor <scan|report|top|tps|tp|reload>"
+  reload-done: "&aConfig ve mesaj dosyaları yeniden yüklendi."
+
+scan:
+  already-running: "&eŞu anda bir tarama devam ediyor, bitmesini bekleyin."
+  unknown-world: "&cDünya bulunamadı: &f{world}"
+  started: "&7Tarama başladı: &f{chunks}&7 yüklü chunk, tick başına &f{per}&7 chunk işlenecek..."
+  complete: "&aTarama tamamlandı: &f{chunks}&a chunk incelendi, &f{findings}&a bulgu."
+  no-issues: "&aHerhangi bir sorun tespit edilmedi. Sunucu sağlıklı görünüyor!"
+  file-saved: "&7Rapor kaydedildi: &f{path}"
+
+report:
+  none: "&eHenüz bir tarama yapılmadı. Önce &f/lagdoctor scan&e çalıştırın."
+  header: "&8&m------&r &bLagDoctor Raporu &7({date}) &8&m------"
+  finding: "&7#{index} {color}[{severity}]&f {cause}"
+  action: "   &a➜ {action}"
+  chunk-tag: " &7[&bTP&7]"
+  chunk-hover: "&7{world} &f{x},{z}&7 chunk'ına ışınlan"
+  footer: "&8Sayfa &f{page}&8/&f{pages}"
+  prev-page: "&7[&a◀ Önceki&7] "
+  next-page: " &7[&aSonraki ▶&7]"
+  file-line: "&7Dosya: &f{path}"
+
+top:
+  header: "&8&m------&r &bEn Yoğun Chunk'lar &7({metric}) &8&m------"
+  metric-entities: "entity"
+  metric-hoppers: "hopper"
+  line: "&7#{index} &f{world} &7chunk &f{x},{z} &8— &e{count} {metric}"
+  none: "&eÖnce &f/lagdoctor scan&e çalıştırın."
+
+tps:
+  header: "&8&m------&r &bTick Özeti &8&m------"
+  line-tps: "&7TPS: {color}{tps}"
+  line-mspt: "&7MSPT ortalama: &f{avg} &7| p95: &f{p95} &7| max: &f{max}"
+  line-spikes: "&7Spike (>{threshold}ms): &f{spikes} &7(son {window} sn)"
+  no-data: "&eHenüz yeterli ölçüm yok, birkaç saniye sonra tekrar deneyin."
+
+tp:
+  usage: "&cKullanım: /lagdoctor tp <dünya> <chunkX> <chunkZ>"
+  done: "&a{world}&7 chunk &f{x},{z}&7 konumuna ışınlandın."
+  bad-number: "&cChunk koordinatları tam sayı olmalı."
+
+# Markdown rapor dosyası başlıkları
+file:
+  worlds: "Dünyalar"
+  chunks-scanned: "Taranan chunk"
+  spikes: "Spike"
+  findings: "Bulgular"
+  top-entities: "En yoğun chunk'lar (entity)"
+  top-hoppers: "En yoğun chunk'lar (hopper)"
+
+# Kural bulguları: her kuralın .cause (neden) ve .action (öneri) metni vardır.
+rule:
+  overloaded:
+    cause: "Sunucu aşırı yüklü: ortalama tick süresi {avg}ms (20 TPS sınırı 50ms)."
+    action: "Aşağıdaki bulguları öncelik sırasına göre uygulayın; en ağır chunk'lardan başlayın."
+  near-capacity:
+    cause: "Ortalama tick süresi {avg}ms; sunucu kapasite sınırına yaklaşıyor."
+    action: "Oyuncu sayısı artmadan aşağıdaki önerileri uygulayın."
+  frequent-spikes:
+    cause: "Son {window} saniyede {spikes} tick spike eşiğini aştı."
+    action: "Spike'lar genellikle tekil yoğun chunk'lardan gelir; chunk bulgularını inceleyin."
+  hopper-density:
+    cause: "r.{rx}.{rz} bölgesindeki {world} chunk {x},{z} içinde {count} hopper var (eşik {threshold})."
+    action: "spigot.yml → ticks-per.hopper-check değerini {current} yerine 8 yapın veya hopper hatlarını sadeleştirin."
+  entity-density:
+    cause: "{world} chunk {x},{z} içinde {count} entity var (eşik {threshold}); en kalabalık tür: {type} x{typeCount}."
+    action: "Bu bölgedeki çiftlik/toplayıcı tasarımını küçültün veya varlıkları birden fazla chunk'a yayın."
+  mob-farm:
+    cause: "{world} chunk {x},{z} içinde {count} adet {type} birikmiş; mob çiftliği sinyali."
+    action: "Çiftliğe öldürme/toplama döngüsü ekleyin; birikim tick süresini doğrudan uzatır."
+  item-accumulation:
+    cause: "{world} chunk {x},{z} içinde yerde {count} eşya duruyor (eşik {threshold})."
+    action: "spigot.yml → merge-radius.item değerini 3.5'e çıkarın ve eşyaları toplayan hazne ekleyin."
+  redstone-heavy:
+    cause: "{world} chunk {x},{z} içinde {count} tile entity var ve {spikes} tick spike'ı ile örtüşüyor; redstone-ağır yapı sinyali."
+    action: "Bu chunk'taki sürekli çalışan saat (clock) devrelerini observer/isteğe-bağlı tasarıma çevirin."
+  tile-entity-density:
+    cause: "{world} chunk {x},{z} içinde {count} tile entity var (eşik {threshold})."
+    action: "Depolama/üretim yapılarını birden fazla chunk'a yayın."
+  spawner-density:
+    cause: "{world} chunk {x},{z} içinde {count} spawner var."
+    action: "paper-world-defaults.yml → tick-rates.mob-spawner değerini 2'ye çıkarmayı düşünün."
+  sim-distance-ram:
+    cause: "Sunucuya {ram}MB RAM ayrılmış ama simulation-distance {value}; bellek baskısı ve GC duraklamaları oluşabilir."
+    action: "server.properties → simulation-distance değerini 6'ya düşürün veya RAM'i artırın."
+  many-chunks:
+    cause: "{count} chunk yüklü; chunk başına düşen maliyet tick süresini uzatıyor."
+    action: "server.properties → view-distance değerini düşürün (öneri: 8) ve boşta kalan dünyaları kapatın."
+
+# Config denetçisi bulguları
+config:
+  view-distance:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "view-distance değerini 8-10 aralığına çekin; her +1 yüklü chunk sayısını karesel artırır."
+  simulation-distance:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "simulation-distance için 6-10 önerilir; entity/tick maliyetini doğrudan belirler."
+  network-compression:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "network-compression-threshold için 256 iyi bir başlangıçtır (64 altı CPU'yu zorlar)."
+  monster-spawn-limit:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "spawn-limits.monsters değerini 70 veya altına çekin."
+  chunk-gc:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "chunk-gc.period-in-ticks 0 (kapalı) olmamalı; 600 önerilir, kullanılmayan chunk'lar bellekte kalıyor."
+  mob-spawn-range:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "mob-spawn-range için 6-8 önerilir ve simulation-distance'tan büyük olmamalıdır."
+  activation-range-monsters:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "entity-activation-range.monsters için 24-32 önerilir."
+  activation-range-animals:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "entity-activation-range.animals için 16-32 önerilir."
+  merge-radius-item:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "merge-radius.item için 2.5-4 önerilir; düşük değer yerde eşya birikmesine yol açar."
+  max-entity-collisions:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "max-entity-collisions için 2-8 önerilir; yüksek değer kalabalık çiftliklerde pahalı çarpışma hesabı yaratır."
+  hopper-check:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "ticks-per.hopper-check için 1-8 arası bir değer kullanın; çok hopper varsa 8 idealdir."
+  hopper-transfer:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "ticks-per.hopper-transfer için 8 (vanilla) önerilir; daha düşük değer hopper maliyetini katlar."
+  per-player-mob-spawns:
+    cause: "{file} → {path} = {value}; önerilen değer: true."
+    action: "entities.spawning.per-player-mob-spawns değerini true yapın; mob limitini oyunculara adil dağıtır."
+  max-auto-save:
+    cause: "{file} → {path} = {value}; önerilen aralığın dışında."
+    action: "chunks.max-auto-save-chunks-per-tick için 24 önerilir; yüksek değer kayıt sırasında spike yaratır."

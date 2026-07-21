@@ -1,0 +1,141 @@
+# LagDoctor English messages. Color codes use &.
+# Missing keys fall back to the jar-bundled defaults, then to the key name itself.
+prefix: "&8[&bLagDoctor&8]&r "
+
+general:
+  no-permission: "&cYou don't have permission for this command."
+  players-only: "&cThis command can only be used in-game."
+  unknown-command: "&cUsage: /lagdoctor <scan|report|top|tps|tp|reload>"
+  reload-done: "&aConfig and message files reloaded."
+
+scan:
+  already-running: "&eA scan is already in progress, please wait for it to finish."
+  unknown-world: "&cWorld not found: &f{world}"
+  started: "&7Scan started: &f{chunks}&7 loaded chunks, processing &f{per}&7 chunks per tick..."
+  complete: "&aScan complete: &f{chunks}&a chunks inspected, &f{findings}&a findings."
+  no-issues: "&aNo issues detected. Your server looks healthy!"
+  file-saved: "&7Report saved: &f{path}"
+
+report:
+  none: "&eNo scan has been run yet. Run &f/lagdoctor scan&e first."
+  header: "&8&m------&r &bLagDoctor Report &7({date}) &8&m------"
+  finding: "&7#{index} {color}[{severity}]&f {cause}"
+  action: "   &a➜ {action}"
+  chunk-tag: " &7[&bTP&7]"
+  chunk-hover: "&7Teleport to {world} chunk &f{x},{z}"
+  footer: "&8Page &f{page}&8/&f{pages}"
+  prev-page: "&7[&a◀ Prev&7] "
+  next-page: " &7[&aNext ▶&7]"
+  file-line: "&7File: &f{path}"
+
+top:
+  header: "&8&m------&r &bBusiest Chunks &7({metric}) &8&m------"
+  metric-entities: "entities"
+  metric-hoppers: "hoppers"
+  line: "&7#{index} &f{world} &7chunk &f{x},{z} &8— &e{count} {metric}"
+  none: "&eRun &f/lagdoctor scan&e first."
+
+tps:
+  header: "&8&m------&r &bTick Summary &8&m------"
+  line-tps: "&7TPS: {color}{tps}"
+  line-mspt: "&7MSPT avg: &f{avg} &7| p95: &f{p95} &7| max: &f{max}"
+  line-spikes: "&7Spikes (>{threshold}ms): &f{spikes} &7(last {window}s)"
+  no-data: "&eNot enough samples yet, try again in a few seconds."
+
+tp:
+  usage: "&cUsage: /lagdoctor tp <world> <chunkX> <chunkZ>"
+  done: "&aTeleported to &f{world}&7 chunk &f{x},{z}&7."
+  bad-number: "&cChunk coordinates must be integers."
+
+# Markdown report file headings
+file:
+  worlds: "Worlds"
+  chunks-scanned: "Chunks scanned"
+  spikes: "Spikes"
+  findings: "Findings"
+  top-entities: "Busiest chunks (entities)"
+  top-hoppers: "Busiest chunks (hoppers)"
+
+# Rule findings: every rule has a .cause and .action text.
+rule:
+  overloaded:
+    cause: "Server is overloaded: average tick time is {avg}ms (the 20 TPS budget is 50ms)."
+    action: "Apply the findings below in priority order; start with the heaviest chunks."
+  near-capacity:
+    cause: "Average tick time is {avg}ms; the server is approaching its capacity limit."
+    action: "Apply the recommendations below before the player count grows further."
+  frequent-spikes:
+    cause: "{spikes} ticks exceeded the spike threshold in the last {window} seconds."
+    action: "Spikes usually come from individual heavy chunks; review the chunk findings."
+  hopper-density:
+    cause: "Chunk {x},{z} in {world} (region r.{rx}.{rz}) contains {count} hoppers (threshold {threshold})."
+    action: "Raise spigot.yml → ticks-per.hopper-check from {current} to 8, or simplify the hopper lines."
+  entity-density:
+    cause: "Chunk {x},{z} in {world} holds {count} entities (threshold {threshold}); most common: {type} x{typeCount}."
+    action: "Shrink the farm/collector design here or spread the entities across multiple chunks."
+  mob-farm:
+    cause: "Chunk {x},{z} in {world} has {count} accumulated {type}; likely a mob farm."
+    action: "Add a kill/collect loop to the farm; accumulation directly increases tick time."
+  item-accumulation:
+    cause: "Chunk {x},{z} in {world} has {count} dropped items on the ground (threshold {threshold})."
+    action: "Raise spigot.yml → merge-radius.item to 3.5 and add hoppers/collectors for the drops."
+  redstone-heavy:
+    cause: "Chunk {x},{z} in {world} contains {count} tile entities and correlates with {spikes} tick spikes; redstone-heavy build signal."
+    action: "Convert always-running clock circuits in this chunk to observer/on-demand designs."
+  tile-entity-density:
+    cause: "Chunk {x},{z} in {world} contains {count} tile entities (threshold {threshold})."
+    action: "Spread storage/production builds across multiple chunks."
+  spawner-density:
+    cause: "Chunk {x},{z} in {world} contains {count} spawners."
+    action: "Consider raising paper-world-defaults.yml → tick-rates.mob-spawner to 2."
+  sim-distance-ram:
+    cause: "The server has {ram}MB of RAM but simulation-distance is {value}; expect memory pressure and GC pauses."
+    action: "Lower server.properties → simulation-distance to 6 or allocate more RAM."
+  many-chunks:
+    cause: "{count} chunks are loaded; the per-chunk overhead is stretching tick time."
+    action: "Lower server.properties → view-distance (suggested: 8) and unload idle worlds."
+
+# Config auditor findings
+config:
+  view-distance:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "Bring view-distance into the 8-10 range; each +1 grows the loaded chunk count quadratically."
+  simulation-distance:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "6-10 is recommended for simulation-distance; it directly drives entity/tick cost."
+  network-compression:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "256 is a good starting point for network-compression-threshold (below 64 strains the CPU)."
+  monster-spawn-limit:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "Bring spawn-limits.monsters down to 70 or below."
+  chunk-gc:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "chunk-gc.period-in-ticks should not be 0 (disabled); 600 is recommended, otherwise unused chunks stay in memory."
+  mob-spawn-range:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "6-8 is recommended for mob-spawn-range, and it should not exceed simulation-distance."
+  activation-range-monsters:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "24-32 is recommended for entity-activation-range.monsters."
+  activation-range-animals:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "16-32 is recommended for entity-activation-range.animals."
+  merge-radius-item:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "2.5-4 is recommended for merge-radius.item; low values let dropped items pile up."
+  max-entity-collisions:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "2-8 is recommended for max-entity-collisions; high values make crowded farms pay for expensive collision math."
+  hopper-check:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "Use a value between 1 and 8 for ticks-per.hopper-check; 8 is ideal with many hoppers."
+  hopper-transfer:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "8 (vanilla) is recommended for ticks-per.hopper-transfer; lower values multiply hopper cost."
+  per-player-mob-spawns:
+    cause: "{file} → {path} = {value}; recommended value: true."
+    action: "Set entities.spawning.per-player-mob-spawns to true; it distributes the mob cap fairly across players."
+  max-auto-save:
+    cause: "{file} → {path} = {value}; outside the recommended range."
+    action: "24 is recommended for chunks.max-auto-save-chunks-per-tick; high values cause spikes during saves."

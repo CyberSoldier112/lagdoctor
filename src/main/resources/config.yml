@@ -1,0 +1,30 @@
+# LagDoctor configuration
+# Output language for all diagnosis messages: tr | en
+language: tr
+
+sampler:
+  # Ring buffer size in ticks (~6000 ticks = 5 minutes at 20 TPS)
+  history-ticks: 6000
+  # A tick longer than this many milliseconds counts as a "spike"
+  spike-threshold-ms: 100
+
+scan:
+  # Chunks inspected per tick during a scan; lower = less impact, slower scan
+  chunks-per-tick: 20
+  # How many of the busiest chunks /lagdoctor top lists
+  top-chunk-count: 10
+
+report:
+  # Write a timestamped markdown report to plugins/LagDoctor/reports/
+  save-to-file: true
+  # Older report files beyond this count are deleted automatically
+  max-saved-reports: 20
+  # Findings shown per chat page
+  findings-per-page: 8
+
+# Rule thresholds (advanced tuning)
+thresholds:
+  hoppers-per-chunk: 60
+  entities-per-chunk: 150
+  dropped-items-per-chunk: 200
+  tile-entities-per-chunk: 100

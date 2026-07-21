@@ -1,0 +1,34 @@
+name: LagDoctor
+version: '${version}'
+main: com.craftpilot.lagdoctor.LagDoctorPlugin
+api-version: '1.20'
+description: In-game lag diagnosis with ranked, actionable recommendations
+author: CraftPilot
+
+commands:
+  lagdoctor:
+    description: LagDoctor diagnosis commands
+    usage: /<command> <scan|report|top|tps|tp|reload>
+    aliases: [ld]
+
+permissions:
+  lagdoctor.scan:
+    description: Run scans and view reports (/lagdoctor scan, report, top)
+    default: op
+  lagdoctor.tps:
+    description: View the tick summary (/lagdoctor tps)
+    default: op
+  lagdoctor.teleport:
+    description: Teleport to chunks from reports (/lagdoctor tp)
+    default: op
+  lagdoctor.admin:
+    description: Reload configuration (/lagdoctor reload)
+    default: op
+  lagdoctor.*:
+    description: All LagDoctor permissions
+    default: op
+    children:
+      lagdoctor.scan: true
+      lagdoctor.tps: true
+      lagdoctor.teleport: true
+      lagdoctor.admin: true
